@@ -698,6 +698,7 @@ public class FileChooserActivity extends Activity {
 
         mViewFiles.setOnItemClickListener(mViewFilesOnItemClickListener);
         mViewFiles.setOnItemLongClickListener(mViewFilesOnItemLongClickListener);
+        
         mViewFiles.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -705,7 +706,7 @@ public class FileChooserActivity extends Activity {
                 return mListviewFilesGestureDetector.onTouchEvent(event);
             }
         });
-
+		
         createIFileAdapter();
 
         // no comments :-D

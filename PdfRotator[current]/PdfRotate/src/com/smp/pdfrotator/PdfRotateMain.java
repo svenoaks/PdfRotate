@@ -3,8 +3,12 @@ package com.smp.pdfrotator;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mobeta.android.dslv.DragSortController;
+import com.mobeta.android.dslv.DragSortListView;
+
 import group.pals.android.lib.ui.filechooser.FileChooserActivity;
 import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,6 +23,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -34,13 +39,13 @@ import static com.smp.pdfrotator.Constants.*;
 public class PdfRotateMain extends Activity
 {
 	private static Boolean trial = true;
-	
+
 	private List<LocalFile> chosenPdfs = new ArrayList<LocalFile>();
 
 	private ProgressBar progress;
 	private TextView progressText;
 	private Spinner rotationSpinner;
-	private ListView listView;
+	private DragSortListView listView;
 	private ArrayAdapter<String> listAdapter;
 	private ImageView image;
 
@@ -49,6 +54,31 @@ public class PdfRotateMain extends Activity
 
 	private boolean locked = false;
 	private boolean wasRunning = false;
+
+	private DragSortListView.DropListener onDrop =
+			new DragSortListView.DropListener()
+			{
+				@Override
+				public void drop(int from, int to)
+				{
+					if (from != to)
+					{
+						String item = listAdapter.getItem(from);
+						listAdapter.remove(item);
+						listAdapter.insert(item, to);
+					}
+				}
+			};
+
+	public DragSortController buildController(DragSortListView dslv)
+	{
+		DragSortController controller = new DragSortController(dslv);
+		controller.setDragHandleId(R.id.drag_handle);
+		controller.setSortEnabled(true);
+		controller.setDragInitMode(DragSortController.ON_DOWN);
+
+		return controller;
+	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState)
@@ -90,13 +120,14 @@ public class PdfRotateMain extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		trial = PdfRotateMain.this.getPackageName().equals(FREE_VERSION);
-		if (trial) 
+		if (trial)
 			setContentView(R.layout.free_activity_pdf_rotate_main);
 		else
 			setContentView(R.layout.base_activity_pdf_rotate_main);
 
-		listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
-		listView = (ListView) findViewById(R.id.files_view);
+		listAdapter = new ArrayAdapter<String>(this, R.layout.list_item_handle_left,
+				R.id.text, new ArrayList<String>());
+		listView = (DragSortListView) findViewById(R.id.files_view);
 		listView.setAdapter(listAdapter);
 
 		image = (ImageView) findViewById(R.id.rotate_image);
@@ -118,14 +149,14 @@ public class PdfRotateMain extends Activity
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0)
-			{}
+			{
+			}
 		});
 
 		filter = new IntentFilter(ACTION_RESP);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 
 		receiver = new ResponseReceiver();
-		
 
 		progress = (ProgressBar) findViewById(R.id.progress_bar);
 		progressText = (TextView) findViewById(R.id.progress_text);
@@ -144,6 +175,13 @@ public class PdfRotateMain extends Activity
 		{
 			DisplayCorruptAlert();
 		}
+		
+		DragSortController cont = buildController(listView);
+		
+		listView.setDropListener(onDrop);
+		listView.setFloatViewManager(cont);
+		listView.setDragEnabled(true);
+		listView.setOnTouchListener(cont);
 	}
 
 	private void setImagePosition(int position)
@@ -179,7 +217,7 @@ public class PdfRotateMain extends Activity
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.pdf_rotate_main, menu);
+		// getMenuInflater().inflate(R.menu.pdf_rotate_main, menu);
 		return true;
 	}
 
@@ -256,9 +294,6 @@ public class PdfRotateMain extends Activity
 
 	private void rotateDone()
 	{
-		this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri
-				.parse("file://")));
-
 		chosenPdfs.clear();
 		listAdapter.clear();
 		progress.setVisibility(View.INVISIBLE);

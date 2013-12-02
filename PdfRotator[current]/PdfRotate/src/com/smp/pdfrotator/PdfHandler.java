@@ -27,9 +27,6 @@ import android.util.Log;
 
 class PdfHandler
 {
-	// temporary
-	
-
 	static int rotatePdfs(List<LocalFile> pdfs, int angle)
 	{
 		int badFiles = 0;
@@ -120,27 +117,6 @@ class PdfHandler
 		}
 	}
 
-	private static void addWatermark(PdfReader reader, PdfStamper stamper, int page) throws DocumentException, IOException
-	{
-		Rectangle mediabox = reader.getPageSize(page);
-		int x = (int) (mediabox.getLeft() + 100);
-		int y = (int) (mediabox.getBottom() + 100);
-
-		PdfContentByte underContent = stamper.getOverContent(page);
-
-		BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
-		PdfGState gs = new PdfGState();
-		gs.setFillOpacity(0.9f);
-		underContent.setGState(gs);
-		underContent.beginText();
-		underContent.setFontAndSize(bf, 24);
-		underContent.setColorFill(Color.LIGHT_GRAY);
-		underContent.showTextAligned(Element.ALIGN_LEFT, BUY_PRO1, x, y, 0);
-		underContent.moveText(0, -24);
-		underContent.newlineShowText(BUY_PRO2);
-		underContent.endText();
-
-	}
 
 	static boolean closeQuietly(Object resource)
 	{
