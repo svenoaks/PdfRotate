@@ -6,8 +6,8 @@
     <string name="action_settings">Settings</string>
     <string name="add_files">Add Files</string>
     <string name="clear_list">Clear List</string>
-    <string name="rotate">Rotate!</string>
-    <string name="wait">Pdf\'s rotating, please wait.</string>
+    <string name="rotate">Do It!</string>
+    <string name="wait">Pdf\'s processing, please wait.</string>
     
     
 

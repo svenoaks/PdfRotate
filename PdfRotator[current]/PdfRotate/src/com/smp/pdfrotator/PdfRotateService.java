@@ -11,7 +11,7 @@ public class PdfRotateService extends IntentService
 {
 	static Boolean trial = true;
 	int badFiles;
-	
+
 	public PdfRotateService()
 	{
 		super("PdfRotateService");
@@ -23,6 +23,7 @@ public class PdfRotateService extends IntentService
 		super.onCreate();
 		trial = PdfRotateService.this.getPackageName().equals(FREE_VERSION);
 	}
+
 	@Override
 	protected void onHandleIntent(Intent intent)
 	{
@@ -30,10 +31,13 @@ public class PdfRotateService extends IntentService
 
 		int angle = intent.getIntExtra(ANGLE_EXTRA, 0);
 
-		badFiles = PdfHandler.rotatePdfs(pdfs, angle);
+		if (angle == RotationAngle.MERGE.angle)
+			badFiles = PdfHandler.MergePdfs(pdfs);
+		else
+			badFiles = PdfHandler.rotatePdfs(pdfs, angle);
 
 		Intent resultIntent = new Intent();
-		resultIntent.putExtra(BAD_FILES, badFiles)
+		resultIntent
 				.setAction(ACTION_RESP)
 				.addCategory(Intent.CATEGORY_DEFAULT);
 
@@ -49,7 +53,8 @@ public class PdfRotateService extends IntentService
 
 	private void makeDoneToast(int badFiles)
 	{
-		CharSequence text = badFiles == 0 ? "All Pdf's rotated successfully." :
+		CharSequence text = badFiles == 0 ? "Pdf operation completed successfully!" 
+				: badFiles == MERGE_FAILED ? "Merge Failed." :
 				"" + badFiles + " Pdf's could not be rotated.";
 		int duration = Toast.LENGTH_LONG;
 		Toast.makeText(this, text, duration).show();

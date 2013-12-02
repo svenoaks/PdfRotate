@@ -197,6 +197,9 @@ public class PdfRotateMain extends Activity
 			case 2:
 				image.setImageResource(R.drawable.rotate);
 				break;
+			case 3:
+				image.setImageResource(R.drawable.merge);
+				break;
 		}
 	}
 

@@ -236,8 +236,9 @@ containing a value of this type.
         public static final int drag=0x7f020023;
         public static final int ic_launcher=0x7f020024;
         public static final int inset_ui=0x7f020025;
-        public static final int rotate=0x7f020026;
-        public static final int watermark=0x7f020027;
+        public static final int merge=0x7f020026;
+        public static final int rotate=0x7f020027;
+        public static final int watermark=0x7f020028;
     }
     public static final class id {
         public static final int action_settings=0x7f04003a;

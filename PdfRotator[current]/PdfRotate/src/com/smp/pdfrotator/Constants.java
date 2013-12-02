@@ -21,6 +21,8 @@ class Constants
 			"Not doing so could result in corruption of the output Pdf's.";
 	static final String BUY_PRO1 = "Pdf rotated by Pdf Rotator.";
 	static final String BUY_PRO2 = "Buy Pro version to remove watermark.";
+	static final int MERGE = -1;
+	static final int MERGE_FAILED = -1;
 
 
 }

@@ -4,7 +4,8 @@ enum RotationAngle
 {
 	CW(90),
 	CCW(270),
-	CW180(180);
+	CW180(180),
+	MERGE(-1);
 
 	private RotationAngle(int angle)
 	{
@@ -22,6 +23,8 @@ enum RotationAngle
 				return "90" + deg + " CCW";
 			case CW180:
 				return "180" + deg;
+			case MERGE:
+				return "Merge";
 		}
 		return "";
 	}

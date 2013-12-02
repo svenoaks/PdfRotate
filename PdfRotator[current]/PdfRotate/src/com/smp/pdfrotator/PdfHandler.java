@@ -229,4 +229,11 @@ class PdfHandler
 
 		return extensionPos;
 	}
+
+	public static int MergePdfs(List<LocalFile> pdfs)
+	{
+		return 0;
+		// TODO Auto-generated method stub
+		
+	}
 }
