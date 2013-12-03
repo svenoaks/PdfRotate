@@ -5,17 +5,22 @@ import static com.smp.pdfrotator.PdfRotateService.trial;
 import harmony.java.awt.Color;
 
 import java.io.Closeable;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.BadPdfFormatException;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfCopy;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfGState;
+import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfReader;
@@ -70,8 +75,8 @@ class PdfHandler
 
 				pageDict.put(PdfName.ROTATE, new PdfNumber(desiredRot));
 
-				//if (trial)
-					//addWatermark(reader, stamper, i);
+				// if (trial)
+				// addWatermark(reader, stamper, i);
 			}
 		}
 		catch (IOException e)
@@ -117,7 +122,6 @@ class PdfHandler
 		}
 	}
 
-
 	static boolean closeQuietly(Object resource)
 	{
 		try
@@ -128,8 +132,14 @@ class PdfHandler
 					((PdfReader) resource).close();
 				else if (resource instanceof PdfStamper)
 					((PdfStamper) resource).close();
-				else
+				else if (resource instanceof PdfCopy)
+					((PdfCopy) resource).close();
+				else if (resource instanceof Document)
+					((Document) resource).close();
+				else if (resource instanceof Closeable)
 					((Closeable) resource).close();
+				else
+					return false;
 				return true;
 			}
 		}
@@ -232,8 +242,82 @@ class PdfHandler
 
 	public static int MergePdfs(List<LocalFile> pdfs)
 	{
-		return 0;
-		// TODO Auto-generated method stub
-		
+		LocalFile outFile = getGoodFile(pdfs.get(0), "-MERGED");
+		int badFiles = 0;
+		Document doc = null;
+		PdfCopy writer = null;
+
+		try
+		{
+			doc = new Document();
+			writer = new PdfCopy(doc, new FileOutputStream(outFile));
+			doc.open();
+
+			PdfContentByte content = writer.getDirectContent();
+
+			for (LocalFile file : pdfs)
+			{
+				if (!merge(file, doc, writer))
+					++badFiles;
+			}
+
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+			return MERGE_FAILED;
+		}
+		catch (DocumentException e)
+		{
+			e.printStackTrace();
+			return MERGE_FAILED;
+		}
+		finally
+		{
+			boolean z = closeQuietly(doc);
+			boolean y = closeQuietly(writer);
+
+			if (!(y && z))
+				return MERGE_FAILED;
+		}
+		return badFiles;
+	}
+
+	private static boolean merge(LocalFile file, Document doc, PdfCopy writer)
+	{
+		final int PAGE_ONE = 1;
+		PdfReader reader = null;
+		try
+		{
+			reader = new PdfReader(file.toString());
+			int i = PAGE_ONE;
+			int l = reader.getNumberOfPages();
+			
+			for (; i <= l; ++i)
+            {
+                doc.setPageSize(reader.getPageSizeWithRotation(i));
+                doc.newPage();
+
+                PdfImportedPage importedPage = writer.getImportedPage(reader, i);
+
+                writer.addPage(importedPage);
+            }
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		catch (BadPdfFormatException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		finally
+		{
+			if (!closeQuietly(reader))
+				return false;
+		}
+		return true;
 	}
 }

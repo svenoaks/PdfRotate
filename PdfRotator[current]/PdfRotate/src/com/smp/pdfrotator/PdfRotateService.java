@@ -55,7 +55,7 @@ public class PdfRotateService extends IntentService
 	{
 		CharSequence text = badFiles == 0 ? "Pdf operation completed successfully!" 
 				: badFiles == MERGE_FAILED ? "Merge Failed." :
-				"" + badFiles + " Pdf's could not be rotated.";
+				"" + badFiles + " Pdf" + (badFiles > 1 ? "'s" : "") + " did not complete.";
 		int duration = Toast.LENGTH_LONG;
 		Toast.makeText(this, text, duration).show();
 	}

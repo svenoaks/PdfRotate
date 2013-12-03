@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -48,6 +49,7 @@ public class PdfRotateMain extends Activity
 	private DragSortListView listView;
 	private ArrayAdapter<String> listAdapter;
 	private ImageView image;
+	private Button rotateButton;
 
 	private IntentFilter filter;
 	private ResponseReceiver receiver;
@@ -66,6 +68,10 @@ public class PdfRotateMain extends Activity
 						String item = listAdapter.getItem(from);
 						listAdapter.remove(item);
 						listAdapter.insert(item, to);
+						
+						LocalFile pdf = chosenPdfs.get(from);
+						chosenPdfs.remove(pdf);
+						chosenPdfs.add(to, pdf);
 					}
 				}
 			};
@@ -131,6 +137,7 @@ public class PdfRotateMain extends Activity
 		listView.setAdapter(listAdapter);
 
 		image = (ImageView) findViewById(R.id.rotate_image);
+		rotateButton = (Button) findViewById(R.id.rotate_button);
 
 		rotationSpinner = (Spinner) findViewById(R.id.rotation_spinner);
 		ArrayAdapter<RotationAngle> rotationAdapter =
@@ -200,6 +207,14 @@ public class PdfRotateMain extends Activity
 			case 3:
 				image.setImageResource(R.drawable.merge);
 				break;
+		}
+		if (position == 3)
+		{
+			rotateButton.setText("Merge!");
+		}
+		else
+		{
+			rotateButton.setText("Rotate!");
 		}
 	}
 
