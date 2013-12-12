@@ -2,12 +2,12 @@ package com.smp.pdfrotator;
 
 import group.pals.android.lib.ui.filechooser.io.localfile.LocalFile;
 import static com.smp.pdfrotator.PdfRotateService.trial;
-import harmony.java.awt.Color;
 
 import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import com.lowagie.text.Document;
@@ -54,7 +54,7 @@ class PdfHandler
 
 		try
 		{
-			reader = new PdfReader(inFile.toString());
+			reader = unlockPdf(new PdfReader(inFile.toString()));
 			stamper = new PdfStamper(reader, new FileOutputStream(outFile));
 
 			int i = FIRST_PAGE;
@@ -262,7 +262,7 @@ class PdfHandler
 			}
 
 		}
-		catch (FileNotFoundException e)
+		catch (IOException e)
 		{
 			e.printStackTrace();
 			return MERGE_FAILED;
@@ -289,21 +289,26 @@ class PdfHandler
 		PdfReader reader = null;
 		try
 		{
-			reader = new PdfReader(file.toString());
+			reader = unlockPdf(new PdfReader(file.toString()));
 			int i = PAGE_ONE;
 			int l = reader.getNumberOfPages();
-			
+
 			for (; i <= l; ++i)
-            {
-                doc.setPageSize(reader.getPageSizeWithRotation(i));
-                doc.newPage();
+			{
+				doc.setPageSize(reader.getPageSizeWithRotation(i));
+				doc.newPage();
 
-                PdfImportedPage importedPage = writer.getImportedPage(reader, i);
+				PdfImportedPage importedPage = writer.getImportedPage(reader, i);
 
-                writer.addPage(importedPage);
-            }
+				writer.addPage(importedPage);
+			}
 		}
 		catch (IOException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+		catch (IllegalArgumentException e)
 		{
 			e.printStackTrace();
 			return false;
@@ -319,5 +324,23 @@ class PdfHandler
 				return false;
 		}
 		return true;
+	}
+
+	public static PdfReader unlockPdf(PdfReader reader)
+	{
+		if (reader == null)
+		{
+			return reader;
+		}
+		try
+		{
+			Field f = reader.getClass().getDeclaredField("encrypted");
+			f.setAccessible(true);
+			f.set(reader, false);
+		}
+		catch (Exception e)
+		{ // ignore
+		}
+		return reader;
 	}
 }

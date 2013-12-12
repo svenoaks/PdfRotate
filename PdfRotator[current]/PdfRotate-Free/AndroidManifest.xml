@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:base="http://schemas.android.com/apk/res-auto"
     package="com.smp.pdfrotator.free"
-    android:versionCode="8"
-    android:versionName="2.0" >
+    android:versionCode="9"
+    android:versionName="2.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
