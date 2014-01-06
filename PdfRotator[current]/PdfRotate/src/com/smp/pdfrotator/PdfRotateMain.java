@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
@@ -23,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -68,7 +70,7 @@ public class PdfRotateMain extends Activity
 						String item = listAdapter.getItem(from);
 						listAdapter.remove(item);
 						listAdapter.insert(item, to);
-						
+
 						LocalFile pdf = chosenPdfs.get(from);
 						chosenPdfs.remove(pdf);
 						chosenPdfs.add(to, pdf);
@@ -118,7 +120,37 @@ public class PdfRotateMain extends Activity
 		{
 			prepRotate();
 		}
+
+		Intent intent = getIntent();
+		if (intent != null)
+		{
+			Uri uri = intent.getData();
+			if (uri != null)
+			{
+				String fileName = null;
+				Cursor c = getContentResolver().query(
+		                uri, null, null, null, null);
+		            c.moveToFirst();
+		            final int fileNameColumnId = c.getColumnIndex(
+		                MediaStore.MediaColumns.DISPLAY_NAME);
+		            if (fileNameColumnId >= 0)
+		                fileName = c.getString(fileNameColumnId);
+				if (fileName != null)
+				{
+					List<LocalFile> file = new ArrayList<LocalFile>();
+					file.add(new LocalFile(fileName));
+					addFilesToList(file);
+				}
+			}
+		}
 		registerReceiver(receiver, filter);
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent)
+	{
+		setIntent(intent);
+		super.onNewIntent(intent);
 	}
 
 	@Override
@@ -182,9 +214,9 @@ public class PdfRotateMain extends Activity
 		{
 			DisplayCorruptAlert();
 		}
-		
+
 		DragSortController cont = buildController(listView);
-		
+
 		listView.setDropListener(onDrop);
 		listView.setFloatViewManager(cont);
 		listView.setDragEnabled(true);
@@ -358,7 +390,7 @@ public class PdfRotateMain extends Activity
 				continue;
 
 			boolean doesContain = false;
-
+			// ack wtf
 			for (int i = 0; i < chosenPdfs.size(); ++i)
 			{
 				if (file.toString().equals(chosenPdfs.get(i).toString()))
