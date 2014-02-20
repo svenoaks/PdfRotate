@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:base="http://schemas.android.com/apk/res-auto"
     package="com.smp.pdfrotator.free"
-    android:versionCode="10"
-    android:versionName="2.2" >
+    android:versionCode="9"
+    android:versionName="2.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -22,36 +22,12 @@
 
         <activity
             android:name="com.google.ads.AdActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
-            android:launchMode="singleTask" />
-        <activity android:name="com.smp.pdfrotator.PdfRotateMain"
-            android:launchMode="singleTask" >
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize" />
+        <activity android:name="com.smp.pdfrotator.PdfRotateMain" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="*"
-                    android:mimeType="*/*"
-                    android:pathPattern=".*\\.pdf" />
-                 <data
-                    android:host="*"
-                    android:mimeType="*/*"
-                    android:pathPattern=".*\\..*\\.pdf" />
-                  <data
-                    android:host="*"
-                    android:mimeType="*/*"
-                    android:pathPattern=".*\\..*\\..*\\.pdf" />
-                   <data
-                    android:host="*"
-                    android:mimeType="*/*"
-                    android:pathPattern=".*\\..*\\..*\\..*\\.pdf" />
             </intent-filter>
         </activity>
         <activity
