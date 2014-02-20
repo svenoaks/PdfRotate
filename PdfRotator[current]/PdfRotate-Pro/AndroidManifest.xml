@@ -1,0 +1,36 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:base="http://schemas.android.com/apk/res-auto"
+    package="com.smp.pdfrotator.pro"
+    android:versionCode="6"
+    android:versionName="2.1" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name_pro"
+        android:theme="@style/AppTheme" >
+        <service android:name="com.smp.pdfrotator.PdfRotateService" />
+        <activity
+            android:name="com.smp.pdfrotator.PdfRotateMain"
+            android:label="@string/app_name_pro" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="group.pals.android.lib.ui.filechooser.FileChooserActivity"
+    		android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+    		android:screenOrientation="user" >
+        </activity>
+       <service android:name="group.pals.android.lib.ui.filechooser.services.LocalFileProvider" />
+    </application>
+
+</manifest>
