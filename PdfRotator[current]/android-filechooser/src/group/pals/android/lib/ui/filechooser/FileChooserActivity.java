@@ -73,6 +73,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Main activity for this library.<br>
@@ -1753,13 +1754,18 @@ public class FileChooserActivity extends Activity {
             }// double tap to choose files
             else {
                 if (mIsMultiSelection)
-                    return;
+                {
+                	Toast.makeText(FileChooserActivity.this, 
+                    		"Select files by clicking the checkbox to the right of the file name.", Toast.LENGTH_LONG).show();
+                	 return;
+                }
 
                 if (mIsSaveDialog)
                     doCheckSaveasFilenameAndFinish(data.getFile().getName());
                 else
                     doFinish(data.getFile());
-            }// single tap to choose files
+            }
+            // single tap to choose files
         }// onItemClick()
     };// mViewFilesOnItemClickListener
 
