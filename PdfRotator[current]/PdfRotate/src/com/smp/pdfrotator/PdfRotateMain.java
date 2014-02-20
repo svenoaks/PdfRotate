@@ -122,6 +122,7 @@ public class PdfRotateMain extends Activity
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		Intent intent = getIntent();
 		if (intent != null)
@@ -146,6 +147,8 @@ public class PdfRotateMain extends Activity
 				}
 			}
 		}
+=======
+>>>>>>> parent of febb670... 2.2 experimental
 =======
 >>>>>>> parent of febb670... 2.2 experimental
 =======
