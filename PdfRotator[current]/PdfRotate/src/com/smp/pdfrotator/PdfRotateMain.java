@@ -135,6 +135,7 @@ public class PdfRotateMain extends Activity
 		                MediaStore.MediaColumns.DISPLAY_NAME);
 		            if (fileNameColumnId >= 0)
 		                fileName = c.getString(fileNameColumnId);
+		            c.close();
 				if (fileName != null)
 				{
 					List<LocalFile> file = new ArrayList<LocalFile>();
